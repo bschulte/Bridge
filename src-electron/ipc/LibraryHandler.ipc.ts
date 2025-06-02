@@ -14,25 +14,44 @@ interface BasicMetadata {
 }
 
 /**
- * Gets all songs from the library directory, including both folders and .sng files
+ * Gets all songs from the library directory recursively, including both folders and .sng files
  */
 export async function getLibrarySongs(libraryPath: string): Promise<ChartData[]> {
 	const songs: ChartData[] = []
 
 	try {
-		const files = await readdir(libraryPath, { withFileTypes: true })
+		await scanDirectory(libraryPath, songs)
+	} catch (err) {
+		console.error('Error reading library directory:', err)
+	}
+
+	return songs
+}
+
+/**
+ * Recursively scans a directory for songs
+ */
+async function scanDirectory(dirPath: string, songs: ChartData[]): Promise<void> {
+	try {
+		const files = await readdir(dirPath, { withFileTypes: true })
 
 		for (const file of files) {
-			const fullPath = join(libraryPath, file.name)
+			const fullPath = join(dirPath, file.name)
 
 			if (file.isDirectory()) {
+				// Check if this directory is a song directory
 				try {
 					const songMetadata = await getSongMetadataFromDirectory(fullPath, file.name)
 					if (songMetadata) {
 						songs.push(createChartData(songMetadata, fullPath))
+					} else {
+						// If not a song directory, recursively scan it
+						await scanDirectory(fullPath, songs)
 					}
 				} catch (err) {
 					console.error(`Error reading song directory ${file.name}:`, err)
+					// Continue scanning other directories even if one fails
+					await scanDirectory(fullPath, songs)
 				}
 			} else if (extname(file.name).toLowerCase() === '.sng') {
 				try {
@@ -46,10 +65,8 @@ export async function getLibrarySongs(libraryPath: string): Promise<ChartData[]>
 			}
 		}
 	} catch (err) {
-		console.error('Error reading library directory:', err)
+		console.error(`Error reading directory ${dirPath}:`, err)
 	}
-
-	return songs
 }
 
 async function getSongMetadataFromDirectory(songPath: string, defaultName: string): Promise<BasicMetadata | null> {

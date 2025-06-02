@@ -31,10 +31,34 @@
 			<thead>
 				<tr>
 					<th class="w-10"></th>
-					<th>Name</th>
-					<th>Artist</th>
-					<th>Album</th>
-					<th>Charter</th>
+					<th class="cursor-pointer select-none" (click)="sort('name')">
+						Name
+						@if (sortColumn === 'name') {
+						<i class="bi" [class.bi-sort-alpha-down]="sortDirection === 'asc'"
+							[class.bi-sort-alpha-up]="sortDirection === 'desc'"></i>
+						}
+					</th>
+					<th class="cursor-pointer select-none" (click)="sort('artist')">
+						Artist
+						@if (sortColumn === 'artist') {
+						<i class="bi" [class.bi-sort-alpha-down]="sortDirection === 'asc'"
+							[class.bi-sort-alpha-up]="sortDirection === 'desc'"></i>
+						}
+					</th>
+					<th class="cursor-pointer select-none" (click)="sort('album')">
+						Album
+						@if (sortColumn === 'album') {
+						<i class="bi" [class.bi-sort-alpha-down]="sortDirection === 'asc'"
+							[class.bi-sort-alpha-up]="sortDirection === 'desc'"></i>
+						}
+					</th>
+					<th class="cursor-pointer select-none" (click)="sort('charter')">
+						Charter
+						@if (sortColumn === 'charter') {
+						<i class="bi" [class.bi-sort-alpha-down]="sortDirection === 'asc'"
+							[class.bi-sort-alpha-up]="sortDirection === 'desc'"></i>
+						}
+					</th>
 				</tr>
 			</thead>
 			<tbody>
