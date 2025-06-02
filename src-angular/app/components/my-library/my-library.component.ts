@@ -26,6 +26,13 @@ export class MyLibraryComponent implements OnInit {
 
 	constructor(public settingsService: SettingsService) { }
 
+	selectAllVisible() {
+		// Add all currently visible songs to the selection
+		this.paginatedSongs.forEach(song => {
+			this.selectedSongs.add(song.drivePath)
+		})
+	}
+
 	ngOnInit() {
 		this.loadLibrarySongs()
 	}

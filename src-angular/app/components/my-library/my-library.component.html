@@ -1,9 +1,15 @@
 <div class="p-8 flex flex-col gap-3 h-full">
 	<div class="flex justify-between items-center">
-		<button class="btn btn-primary" (click)="loadLibrarySongs()">
-			<i class="bi bi-arrow-clockwise"></i>
-			Refresh Library
-		</button>
+		<div class="flex gap-2">
+			<button class="btn btn-primary" (click)="loadLibrarySongs()">
+				<i class="bi bi-arrow-clockwise"></i>
+				Refresh Library
+			</button>
+			<button class="btn btn-secondary" (click)="selectAllVisible()">
+				<i class="bi bi-check-all"></i>
+				Select All Visible
+			</button>
+		</div>
 		<button class="btn btn-error" [disabled]="selectedSongs.size === 0" (click)="openDeleteModal()">
 			<i class="bi bi-trash"></i>
 			Delete Selected ({{ selectedSongs.size }})
