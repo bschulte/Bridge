@@ -14,9 +14,36 @@ interface BasicMetadata {
 }
 
 /**
+ * Checks if a directory contains the required files to be a valid Clone Hero song
+ */
+async function isValidSongDirectory(dirPath: string): Promise<boolean> {
+	try {
+		const files = await readdir(dirPath)
+		const lowerCaseFiles = files.map(f => f.toLowerCase())
+
+		console.log(`Checking directory ${dirPath}`)
+		console.log('Files found:', lowerCaseFiles)
+
+		// Must have either a .chart or .mid file
+		const hasChart = lowerCaseFiles.some(f => f === 'notes.chart' || f.endsWith('.mid'))
+
+		// Must have song.ini for metadata
+		const hasIni = lowerCaseFiles.includes('song.ini')
+
+		console.log(`Directory ${dirPath} validation:`, { hasChart, hasIni })
+
+		return hasChart && hasIni
+	} catch (err) {
+		console.error(`Error checking if ${dirPath} is a valid song directory:`, err)
+		return false
+	}
+}
+
+/**
  * Gets all songs from the library directory recursively, including both folders and .sng files
  */
 export async function getLibrarySongs(libraryPath: string): Promise<ChartData[]> {
+	console.log('Starting library scan at:', libraryPath)
 	const songs: ChartData[] = []
 
 	try {
@@ -25,6 +52,7 @@ export async function getLibrarySongs(libraryPath: string): Promise<ChartData[]>
 		console.error('Error reading library directory:', err)
 	}
 
+	console.log('Found songs:', songs.length)
 	return songs
 }
 
@@ -34,29 +62,37 @@ export async function getLibrarySongs(libraryPath: string): Promise<ChartData[]>
 async function scanDirectory(dirPath: string, songs: ChartData[]): Promise<void> {
 	try {
 		const files = await readdir(dirPath, { withFileTypes: true })
+		console.log(`Scanning directory: ${dirPath}`)
 
+		// Only check for songs in directories that have the required files
+		const isValid = await isValidSongDirectory(dirPath)
+		if (isValid) {
+			console.log(`Found valid song directory: ${dirPath}`)
+			try {
+				const songMetadata = await getSongMetadataFromDirectory(dirPath, dirPath.split('/').pop() || '')
+				if (songMetadata) {
+					console.log(`Adding song: ${songMetadata.name} by ${songMetadata.artist}`)
+					songs.push(createChartData(songMetadata, dirPath))
+				}
+			} catch (err) {
+				console.error(`Error reading song directory ${dirPath}:`, err)
+			}
+		} else {
+			console.log(`Not a valid song directory: ${dirPath}`)
+		}
+
+		// Scan all subdirectories and .sng files
 		for (const file of files) {
 			const fullPath = join(dirPath, file.name)
 
 			if (file.isDirectory()) {
-				// Check if this directory is a song directory
-				try {
-					const songMetadata = await getSongMetadataFromDirectory(fullPath, file.name)
-					if (songMetadata) {
-						songs.push(createChartData(songMetadata, fullPath))
-					} else {
-						// If not a song directory, recursively scan it
-						await scanDirectory(fullPath, songs)
-					}
-				} catch (err) {
-					console.error(`Error reading song directory ${file.name}:`, err)
-					// Continue scanning other directories even if one fails
-					await scanDirectory(fullPath, songs)
-				}
+				await scanDirectory(fullPath, songs)
 			} else if (extname(file.name).toLowerCase() === '.sng') {
+				console.log(`Found .sng file: ${fullPath}`)
 				try {
 					const songMetadata = await getSongMetadataFromSng(fullPath, file.name)
 					if (songMetadata) {
+						console.log(`Adding .sng song: ${songMetadata.name} by ${songMetadata.artist}`)
 						songs.push(createChartData(songMetadata, fullPath))
 					}
 				} catch (err) {
@@ -77,6 +113,7 @@ async function getSongMetadataFromDirectory(songPath: string, defaultName: strin
 		try {
 			const iniContent = await readFile(songIniPath, 'utf-8')
 			return parseIniFile(iniContent, defaultName)
+
 		} catch {
 			try {
 				const chartContent = await readFile(chartPath, 'utf-8')
