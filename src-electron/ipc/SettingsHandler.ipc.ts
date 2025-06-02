@@ -14,7 +14,7 @@ function readSettings() {
 	try {
 		const settings = JSON.parse(readFileSync(settingsPath, 'utf8')) as Partial<Settings>
 		return Object.assign(_.cloneDeep(defaultSettings), settings)
-	} catch (err) {
+	} catch (err: any) {
 		if (err?.code === 'ENOENT') {
 			saveSettings(_.cloneDeep(defaultSettings))
 		} else {

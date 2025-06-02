@@ -121,6 +121,8 @@ async function getFilesFromSng(sngPath: string) {
 				return usedSizeMib > MAX_FILES_MIB || sortedFile.contentsLen / BigInt(1024) / BigInt(1024) >= MAX_FILE_MIB
 			}
 		}
+
+		return false
 	}
 
 

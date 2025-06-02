@@ -88,11 +88,13 @@ export class ChartDownload {
 	async startOrRetry() {
 		try {
 			switch (this.stepCompletedCount) {
+				// @ts-expect-error Need this
 				case 0: await this.checkFilesystem(); this.stepCompletedCount++; if (this._canceled) { return } // break omitted
+				// @ts-expect-error Need this
 				case 1: await this.downloadChart(); this.stepCompletedCount++; if (this._canceled) { return } // break omitted
 				case 2: await this.transferChart(); this.stepCompletedCount++; if (this._canceled) { return } // break omitted
 			}
-		} catch (err) {
+		} catch (err: any) {
 			this.showProgress.cancel()
 			if (err.header && (err.body || err.body === '')) {
 				this.eventEmitter.emit('error', err)

@@ -17,17 +17,17 @@ const resultsPerPage = 25
 export class SearchService {
 
 	public searchLoading = false
-	public songsResponse: Partial<SearchResult>
+	public songsResponse!: Partial<SearchResult>
 	public currentPage = 1
 	public newSearch = new EventEmitter<Partial<SearchResult>>()
 	public updateSearch = new EventEmitter<Partial<SearchResult>>()
 	public isDefaultSearch = true
 	public isAdvancedSearch = false
-	public lastAdvancedSearch: AdvancedSearch
+	public lastAdvancedSearch!: AdvancedSearch
 
-	public groupedSongs: ChartData[][]
+	public groupedSongs!: ChartData[][]
 
-	public availableIcons: string[]
+	public availableIcons!: string[]
 
 	public searchControl = new FormControl('', { nonNullable: true })
 	public instrument: FormControl<Instrument | null>

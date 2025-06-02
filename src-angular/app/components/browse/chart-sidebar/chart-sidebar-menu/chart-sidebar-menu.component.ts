@@ -114,8 +114,8 @@ export class ChartSidebarMenutComponent implements OnInit {
 				chartId: this.selectedVersion.value.chartId,
 				reason: this.reportOption.value,
 				extraInfo: this.reportExtraInfo.value,
-			}).subscribe((response: { message: string }) => {
-				this.reportMessage = response.message
+			}).subscribe(response => {
+				this.reportMessage = response.toString()
 				this.reportState = 'sent'
 			})
 		} else {

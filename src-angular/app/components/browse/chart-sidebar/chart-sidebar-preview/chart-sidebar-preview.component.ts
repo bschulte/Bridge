@@ -206,6 +206,8 @@ async function getChartFiles(chartData: ChartData) {
 				return usedSizeMib > MAX_FILES_MIB || sortedFile.contentsLen / BigInt(1024) / BigInt(1024) >= MAX_FILE_MIB
 			}
 		}
+
+		return false
 	}
 
 	const files: { fileName: string; data: Uint8Array }[] = []

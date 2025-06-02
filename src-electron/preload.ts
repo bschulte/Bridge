@@ -11,9 +11,7 @@ function getEmitter<K extends keyof IpcToMainEmitEvents>(key: K) {
 }
 
 function getListenerAdder<K extends keyof IpcFromMainEmitEvents>(key: K) {
-	return (listener: (data: IpcFromMainEmitEvents[K]) => void) => {
-		electron.ipcRenderer.on(key, (_event, ...results) => listener(results[0]))
-	}
+	return (callback: (data: IpcFromMainEmitEvents[K]) => void) => electron.ipcRenderer.on(key, (_event, data) => callback(data))
 }
 
 const electronApi: ContextBridgeApi = {
@@ -25,6 +23,8 @@ const electronApi: ContextBridgeApi = {
 		isMaximized: getInvoker('isMaximized'),
 		showOpenDialog: getInvoker('showOpenDialog'),
 		getThemeColors: getInvoker('getThemeColors'),
+		getLibrarySongs: getInvoker('getLibrarySongs'),
+		deleteLibrarySongs: getInvoker('deleteLibrarySongs'),
 	},
 	emit: {
 		download: getEmitter('download'),

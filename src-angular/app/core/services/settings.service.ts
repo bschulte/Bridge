@@ -13,11 +13,12 @@ import { colorNames, convertColorFormat } from '../../../../src-shared/UtilFunct
 })
 export class SettingsService {
 
-	private settings: Settings
+	private settings!: Settings
 
 	constructor(
 		@Inject(DOCUMENT) private document: Document,
-	) { }
+	) {
+	}
 
 	async loadSettings() {
 		this.settings = await window.electron.invoke.getSettings()

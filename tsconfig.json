@@ -1,16 +1,17 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
     "module": "ES2022",
-		"moduleResolution": "Node",
+    "moduleResolution": "Node",
     "target": "ES2022",
-    "declaration": true,
+    "declaration": false,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-		"esModuleInterop": true,
+    "esModuleInterop": true,
     "sourceMap": true,
     "noImplicitOverride": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -18,15 +19,23 @@
     "useDefineForClassFields": false,
     "noImplicitAny": true,
     "strictBindCallApply": true,
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
+    "lib": ["ES2022", "dom"],
     "forceConsistentCasingInFileNames": true,
-		"typeRoots": ["./node_modules/@types"],
-		"noErrorTruncation": true,
+    "noErrorTruncation": true,
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "downlevelIteration": true,
+    "types": ["node"],
+    "typeRoots": ["node_modules/@types", "src-shared/interfaces"],
+    "strictPropertyInitialization": false
   },
-	"angularCompilerOptions": {
-    "strictTemplates": true
+  "angularCompilerOptions": {
+    "strictTemplates": true,
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true
   }
 }

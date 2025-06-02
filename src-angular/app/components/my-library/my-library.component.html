@@ -1,0 +1,83 @@
+<div class="p-8 flex flex-col gap-3">
+	<div class="flex justify-between items-center">
+		<button class="btn btn-primary" (click)="loadLibrarySongs()">
+			<i class="bi bi-arrow-clockwise"></i>
+			Refresh Library
+		</button>
+		<button class="btn btn-error" [disabled]="selectedSongs.size === 0" (click)="openDeleteModal()">
+			<i class="bi bi-trash"></i>
+			Delete Selected ({{ selectedSongs.size }})
+		</button>
+	</div>
+
+	<div class="form-control">
+		<input type="text" placeholder="Search songs..." class="input input-bordered w-full" [value]="searchTerm"
+			(input)="onSearchInput($event)" />
+	</div>
+
+	@if (!settingsService.libraryDirectory) {
+	<div class="alert alert-warning">
+		<i class="bi bi-exclamation-triangle"></i>
+		<span>Please select a chart library directory in the Settings tab to view your songs.</span>
+	</div>
+	} @else if (songs.length === 0) {
+	<div class="alert alert-info">
+		<i class="bi bi-info-circle"></i>
+		<span>No songs found in your library directory. Download some songs from the Browse tab!</span>
+	</div>
+	} @else {
+	<div class="overflow-x-auto">
+		<table class="table table-zebra">
+			<thead>
+				<tr>
+					<th class="w-10"></th>
+					<th>Name</th>
+					<th>Artist</th>
+					<th>Album</th>
+					<th>Charter</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for (song of filteredSongs; track song) {
+				<tr [class.selected]="selectedSongs.has(song.drivePath)" (click)="toggleSongSelection(song)"
+					class="cursor-pointer hover:bg-base-300">
+					<td>
+						<input type="checkbox" class="checkbox" [checked]="selectedSongs.has(song.drivePath)"
+							(click)="toggleSongSelection(song); $event.stopPropagation()" />
+					</td>
+					<td>{{ song.name }}</td>
+					<td>{{ song.artist }}</td>
+					<td>{{ song.album }}</td>
+					<td>{{ song.charter }}</td>
+				</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+	}
+</div>
+
+<!-- Delete Confirmation Modal -->
+<dialog id="delete_confirm_modal" class="modal">
+	<div class="modal-box">
+		<h3 class="font-bold text-lg">Confirm Deletion</h3>
+		<p class="py-4">Are you sure you want to delete {{ selectedSongs.size }} song(s)? This action cannot be undone.</p>
+		<div class="modal-action">
+			<form method="dialog">
+				<div class="flex gap-2">
+					<button class="btn">Cancel</button>
+					<button class="btn btn-error" (click)="deleteSelectedSongs()">Delete</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button>close</button>
+	</form>
+</dialog>
+
+<style>
+	.selected {
+		@apply bg-base-300;
+	}
+</style>

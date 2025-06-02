@@ -51,7 +51,7 @@ export class ResultTableRowComponent implements OnInit {
 			case 'guitarcoopghl': return this.song[0].diff_guitar_coop_ghl ?? '?'
 			case 'rhythmghl': return this.song[0].diff_rhythm_ghl ?? '?'
 			case 'bassghl': return this.song[0].diff_bassghl ?? '?'
-			default: ''
+			default: return ''
 		}
 	}
 

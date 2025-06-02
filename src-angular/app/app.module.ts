@@ -17,6 +17,7 @@ import { DownloadsModalComponent } from './components/browse/status-bar/download
 import { StatusBarComponent } from './components/browse/status-bar/status-bar.component'
 import { SettingsComponent } from './components/settings/settings.component'
 import { ToolbarComponent } from './components/toolbar/toolbar.component'
+import { MyLibraryComponent } from './components/my-library/my-library.component'
 import { RemoveStyleTagsPipe } from './core/pipes/remove-style-tags.pipe'
 
 @NgModule({
@@ -35,12 +36,15 @@ import { RemoveStyleTagsPipe } from './core/pipes/remove-style-tags.pipe'
 		DownloadsModalComponent,
 		RemoveStyleTagsPipe,
 		SettingsComponent,
+		MyLibraryComponent,
 	],
-	bootstrap: [AppComponent], imports: [
+	bootstrap: [AppComponent],
+	imports: [
 		BrowserModule,
 		AppRoutingModule,
 		FormsModule,
 		ReactiveFormsModule,
-	], providers: [provideHttpClient(withInterceptorsFromDi())],
+	],
+	providers: [provideHttpClient(withInterceptorsFromDi())],
 })
 export class AppModule { }
