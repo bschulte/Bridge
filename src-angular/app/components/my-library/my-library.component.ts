@@ -17,11 +17,38 @@ export class MyLibraryComponent implements OnInit {
 	public searchTerm = ''
 	public sortColumn: SortColumn = 'artist'
 	public sortDirection: SortDirection = 'asc'
+	public Math = Math
+
+	// Pagination
+	public currentPage = 1
+	public pageSize = 25
+	public pageSizeOptions = [10, 25, 50, 100]
 
 	constructor(public settingsService: SettingsService) { }
 
 	ngOnInit() {
 		this.loadLibrarySongs()
+	}
+
+	get totalPages(): number {
+		return Math.ceil(this.filteredSongs.length / this.pageSize)
+	}
+
+	get paginatedSongs(): ChartData[] {
+		const start = (this.currentPage - 1) * this.pageSize
+		const end = start + this.pageSize
+		return this.filteredSongs.slice(start, end)
+	}
+
+	onPageChange(page: number) {
+		this.currentPage = page
+	}
+
+	onPageSizeChange(event: Event) {
+		const select = event.target as HTMLSelectElement
+		this.pageSize = Number(select.value)
+		// Reset to first page when changing page size
+		this.currentPage = 1
 	}
 
 	async loadLibrarySongs() {
@@ -63,6 +90,9 @@ export class MyLibraryComponent implements OnInit {
 				return bValue(b).localeCompare(aValue(a))
 			}
 		})
+
+		// Reset to first page when filtering/sorting changes
+		this.currentPage = 1
 	}
 
 	onSearchInput(event: Event) {
@@ -72,7 +102,6 @@ export class MyLibraryComponent implements OnInit {
 
 	sort(column: SortColumn) {
 		if (this.sortColumn === column) {
-			// Toggle direction if clicking the same column
 			if (this.sortDirection === 'asc') {
 				this.sortDirection = 'desc'
 			} else {
